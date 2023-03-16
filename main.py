@@ -89,6 +89,7 @@ while RUNNING:
     ### draw and render section of game loop
     screen.fill(BLUE)
     all_sprites.draw(screen)
+    # will show scoreboard
     draw_text("Score: " + str(SCORE), 22, WHITE, WIDTH/2, HEIGHT/10)
     # double buffering draws frames for entire screen
     pg.display.flip()
