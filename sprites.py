@@ -11,8 +11,10 @@ from random import randint
 # player class
 
 class Player(Sprite):
-    def __init__(self):
+    def __init__(self, game):
         Sprite.__init__(self)
+        # these are the properties (think of a mold for an object in production)
+        self.game = game
         self.image = pg.Surface((50,50))
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
@@ -24,7 +26,7 @@ class Player(Sprite):
         self.canjump = False
     def input(self):
         keystate = pg.key.get_pressed()
-
+        # controls movement through acceleration
         if keystate[pg.K_w]:
             self.acc.y = -PLAYER_ACC
         if keystate[pg.K_a]:
@@ -33,17 +35,26 @@ class Player(Sprite):
             self.acc.y = PLAYER_ACC
         if keystate[pg.K_d]:
             self.acc.x = PLAYER_ACC
-    # ...
+
+    def jump(self):
+        hits = pg.sprite.spritecollide(self, self.game.platforms, False)
+
     def inbounds(self):
         if self.rect.x > WIDTH - 50:
             self.pos.x = WIDTH - 25
             self.vel.x = 0
             print("i am off the right side of the screen...")
         if self.rect.x < 0:
+            self.pos.x = 25
+            self.vel.x = 0
             print("i am off the left side of the screen...")
         if self.rect.y > HEIGHT:
+            self.pos.y = HEIGHT - 25
+            self.vel.y = 0
             print("i am off the bottom of the screen")
         if self.rect.y < 0:
+            self.pos.y = 25
+            self.vel.y = 0
             print("i am off the top of the screen...")
 
     def update(self):
@@ -82,6 +93,8 @@ class Mob(Sprite):
         if self.rect.y > HEIGHT:
             self.vel.y *= -1
             # self.acc = self.vel * -self.cofric
+
+        
     def update(self):
         self.inbounds()
         # self.pos.x += self.vel.x
