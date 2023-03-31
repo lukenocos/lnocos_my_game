@@ -5,8 +5,17 @@
 # Create Libraries
 
 # Sources: http://kidscancode.org/blog/2016/08/pygame_1-1_getting-started/
-# Sources: 
+'''
+My Goal:
 
+Create more platforms and make it so that the player can continue to move upwards
+by jumping on platforms
+
+Figure out how to create a boundaries 
+
+Keep score of how many platforms the player has advanced
+
+'''
 # import libs
 import pygame as pg
 import random
@@ -32,17 +41,30 @@ class Game:
         pg.display.set_caption("my game")
         self.clock = pg.time.Clock()
         self.running = True
-
     def new(self):
-        # method for starting or restarting the game
+        # starting a new game
         self.score = 0
         self.all_sprites = pg.sprite.Group()
-        self.enemies = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+        self.enemies = pg.sprite.Group()
         self.player = Player(self)
+        self.plat1 = Platform(WIDTH, 50, 0, HEIGHT-50, (150,150,150), "normal")
+        self.plat2 = Platform(200, 25, 200, 400, (150,150,150), "normal")
+        self.plat3 = Platform(200, 25, 400, 250, (150,150,150), "normal")
+        self.plat4 = Platform(150, 25, 150, 100, (150,150,150), "normal")
+        self.all_sprites.add(self.plat1)
+        self.all_sprites.add(self.plat2)
+        self.all_sprites.add(self.plat3)
+        self.all_sprites.add(self.plat4)
+
+        self.platforms.add(self.plat1)
+        self.platforms.add(self.plat2)
+        self.platforms.add(self.plat3)
+        self.platforms.add(self.plat4)
+        
         self.all_sprites.add(self.player)
         for i in range(0,10):
-            m = Mob(20,20, (0,255,0))
+            m = Mob(20,20,(0,255,0))
             self.all_sprites.add(m)
             self.enemies.add(m)
         self.run()
@@ -53,7 +75,6 @@ class Game:
             self.events()
             self.update()
             self.draw()
-
     def events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -62,10 +83,24 @@ class Game:
                     self.running = False
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
-                    self.player.jump()
-                
+                    self.player.jump() 
     def update(self):
         self.all_sprites.update()
+        if self.player.vel.y > 0:
+            hits = pg.sprite.spritecollide(self.player, self.platforms, False)
+            if hits:
+                if hits[0].variant == "dissapearing":
+                    hits[0].kill()
+                elif hits[0].variant == "icey":
+                    self.player.pos.y = hits[0].rect.top
+                    self.player.vel.y = 0
+                    PLAYER_FRICTION = 0
+                elif hits[0].variant == "bouncey":
+                    self.player.pos.y = hits[0].rect.top
+                    self.player.vel.y = -PLAYER_JUMP
+                else:
+                    self.player.pos.y = hits[0].rect.top
+                    self.player.vel.y = 0
     def draw(self):
         self.screen.fill(BLUE)
         self.all_sprites.draw(self.screen)
@@ -77,14 +112,17 @@ class Game:
         font = pg.font.Font(font_name, size)
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
-        text_rect.midtop = (x,y)
+        text_rect.midstop = (x,y)
         self.screen.blit(text_surface, text_rect)
     def get_mouse_now(self):
         x,y = pg.mouse.get_pos()
         return (x,y)
     
+
+# instantiate the game class
 g = Game()
 
+# start the game loop
 while g.running:
     g.new()    
 
