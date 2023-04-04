@@ -25,31 +25,44 @@ class Player(Sprite):
         self.cofric = 0.1
         self.canjump = False
     def input(self):
+
+        # reset variables
+        dx = 0
+        dy = 0
+       
         # method that allows the object to move based off user input
         keystate = pg.key.get_pressed()
-        # if keystate[pg.K_w]:
-        #     self.acc.y = -PLAYER_ACC
+        
         if keystate[pg.K_a]:
+            dx = -PLAYER_ACC
             self.acc.x = -PLAYER_ACC
-        # if keystate[pg.K_s]:
-        #     self.acc.y = PLAYER_ACC
+       
         if keystate[pg.K_d]:
+            dy = -PLAYER_ACC
             self.acc.x = PLAYER_ACC
-        # if keystate[pg.K_p]:
-        #     if PAUSED == False:
-        #         PAUSED = True
-        #         print(PAUSED)
-        #     else:
-        #         PAUSED = False
-        #         print(PAUSED)
+
+        # keeps it inbounds
+
+        if self.rect.left + self.acc.x < 0:
+            self.acc.x = -self.rect.left
+        if self.rect.right + self.acc.x > WIDTH:
+            self.acc.x = WIDTH - self.rect.right
+
+        
+        # update block position
+        self.rect.x += dx
+        self.rect.y += dy
+       
 
     def jump(self):
         self.rect.x += 1
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.rect.x -= 1
-        # if hits:
-        self.vel.y = -PLAYER_JUMP
+        if hits:
+            self.vel.y = -PLAYER_JUMP
     def inbounds(self):
+
+
         if self.rect.x > WIDTH - 50:
             self.pos.x = WIDTH - 25
             self.vel.x = 0
@@ -82,21 +95,24 @@ class Player(Sprite):
         self.vel += self.acc
         self.pos += self.vel + 0.5 * self.acc
         self.rect.midbottom = self.pos
+        self.rect.y += SCROLL
+
+
 
 class Mob(Sprite):
     def __init__(self,width,height, color):
         Sprite.__init__(self)
-        self.width = width
-        self.height = height
-        self.image = pg.Surface((self.width,self.height))
-        self.color = color
-        self.image.fill(self.color)
-        self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH/2, HEIGHT/2)
-        self.pos = vec(WIDTH/2, HEIGHT/2)
-        self.vel = vec(randint(1,5),randint(1,5))
-        self.acc = vec(1,1)
-        self.cofric = 0.01
+        # self.width = width
+        # self.height = height
+        # self.image = pg.Surface((self.width,self.height))
+        # self.color = color
+        # self.image.fill(self.color)
+        # # self.rect = self.image.get_rect()
+        # # self.rect.center = (WIDTH/2, HEIGHT/2)
+        # self.pos = vec(WIDTH/2, HEIGHT/2)
+        # self.vel = vec(randint(1,5),randint(1,5))
+        # self.acc = vec(1,1)
+        # self.cofric = 0.01
     # ...
     def inbounds(self):
         if self.rect.x > WIDTH:
@@ -132,4 +148,8 @@ class Platform(Sprite):
         self.rect.x = x
         self.rect.y = y
         self.variant = variant
+
+
+
+
         
