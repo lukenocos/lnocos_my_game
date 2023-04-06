@@ -9,7 +9,6 @@ from random import randint
 vec = pg.math.Vector2
 
 # player class
-
 class Player(Sprite):
     def __init__(self, game):
         Sprite.__init__(self)
@@ -47,13 +46,8 @@ class Player(Sprite):
             self.acc.x = -self.rect.left
         if self.rect.right + self.acc.x > WIDTH:
             self.acc.x = WIDTH - self.rect.right
-
-        
-        # update block position
-        self.rect.x += dx
-        self.rect.y += dy
        
-
+    # allows the player to jump 
     def jump(self):
         self.rect.x += 1
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
@@ -61,8 +55,6 @@ class Player(Sprite):
         if hits:
             self.vel.y = -PLAYER_JUMP
     def inbounds(self):
-
-
         if self.rect.x > WIDTH - 50:
             self.pos.x = WIDTH - 25
             self.vel.x = 0
@@ -96,8 +88,6 @@ class Player(Sprite):
         self.pos += self.vel + 0.5 * self.acc
         self.rect.midbottom = self.pos
         self.rect.y += SCROLL
-
-
 
 class Mob(Sprite):
     def __init__(self,width,height, color):
@@ -136,6 +126,7 @@ class Mob(Sprite):
         self.pos += self.vel
         self.rect.center = self.pos
 
+# acts as a mold for platforms 
 class Platform(Sprite):
     def __init__(self, width, height, x, y, color, variant):
         Sprite.__init__(self)

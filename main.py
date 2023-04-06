@@ -34,15 +34,16 @@ game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
  
 # create game class in order to pass properties to the sprites file 
-
 class Game:
     def __init__(self):
         # init game window 
         pg.init()
         pg.mixer.init()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        # sets bg as the variable that loads the cloud background image
         bg = pg.image.load('CLOUD.jpg')
         global bg_image
+        # transforms the image into the same scale of the width and height of the screen
         bg_image = pg.transform.scale(bg, (WIDTH, HEIGHT))
         pg.display.set_caption("my game")
         self.clock = pg.time.Clock()
@@ -55,6 +56,7 @@ class Game:
         self.platforms = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
         self.player = Player(self)
+        # creates platforms
         self.plat1 = Platform(WIDTH, 50, 0, HEIGHT-50, (150,150,150), "normal")
         self.plat2 = Platform(200, 25, 150, 450, (150,150,150), "normal")
         self.plat3 = Platform(200, 25, 500, 250, (150,150,150), "normal")
@@ -65,7 +67,11 @@ class Game:
         self.plat8 = Platform(200, 25, 400, -750, (150,150,150), "normal")
         self.plat9 = Platform(200, 25, 250, -950, (150,150,150), "normal")
         self.plat10 = Platform(200, 25, 450, -1150, (150,150,150), "normal")
+        self.plat11 = Platform(200, 25, 770, -1350, (150,150,150), "normal")
+        self.plat12 = Platform(200, 25, 340, -1550, (150,150,150), "normal")
+        self.plat13 = Platform(200, 25, 150, -1350, (150,150,150), "dissapearing")
 
+        # adds the image of the platform to the screen
         self.all_sprites.add(self.plat1)
         self.all_sprites.add(self.plat2)
         self.all_sprites.add(self.plat3)
@@ -76,7 +82,11 @@ class Game:
         self.all_sprites.add(self.plat8)
         self.all_sprites.add(self.plat9)
         self.all_sprites.add(self.plat10)
+        self.all_sprites.add(self.plat11)
+        self.all_sprites.add(self.plat12)
+        self.all_sprites.add(self.plat13)
 
+        # add platforms onto the screen so that the player can land on it
         self.platforms.add(self.plat1)
         self.platforms.add(self.plat2)
         self.platforms.add(self.plat3)
@@ -87,12 +97,12 @@ class Game:
         self.platforms.add(self.plat8)
         self.platforms.add(self.plat9)
         self.platforms.add(self.plat10)
-        
+        self.platforms.add(self.plat11)
+        self.platforms.add(self.plat12)
+        self.platforms.add(self.plat13)
+
+        # add player to game
         self.all_sprites.add(self.player)
-        # for i in range(0,10):
-        #     m = Mob(20,20,(0,255,0))
-        #     self.all_sprites.add(m)
-        #     self.enemies.add(m)
         self.run()
     
     def run(self):
@@ -115,9 +125,9 @@ class Game:
     
     def update(self):
         self.all_sprites.update()
-        
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player, self.platforms, False)
+            # create a variation of types of platforms 
             if hits:
                 if hits[0].variant == "dissapearing":
                     hits[0].kill()
@@ -131,30 +141,49 @@ class Game:
                 else:
                     self.player.pos.y = hits[0].rect.top
                     self.player.vel.y = 0
+
         # infinite scroller that continues up 
+        '''
+        if the player reaches a quarter of the height of the screen, 
+        the players y-position increases by its velocity, moving the player
+        up the screen. All platforms undergo the same movement. 
+        '''
         if self.player.rect.top <= HEIGHT / 4:
             self.player.pos.y += abs(self.player.vel.y)
             for plat in self.platforms:
                 plat.rect.y += abs(self.player.vel.y)
                 if plat.rect.top >= HEIGHT:
                     plat.kill()
+                    # as the scroller moves vertically, the score increases by 10 
                     self.score += 10
                     print(self.score)
 
+                    
         # resets player when it falls
+        '''
+        if player reaches the bottom of the screen, 
+        the player is respawned at the starting position and the player is killed
+
+        checks if the player is falling off the bottom of the screen and moves 
+        all sprites upwards, creating a falling effect
+
+        '''
         if self.player.rect.bottom > HEIGHT:
             for sprite in self.all_sprites:
                 sprite.rect.y -= max(self.player.vel.y, 10)
                 if sprite.rect.bottom < 0:
                     sprite.kill()
+        # len returns the length of an object
+        # returns object to start 
         if len(self.platforms) == 0:
             self.playing = False
         
     def draw(self):
+        # blits the cloud image in the background 
         self.screen.blit(bg_image, (0,0))
-        # self.draw_text(("Score: "+ str(self.score), 24, WHITE, WIDTH/2, HEIGHT/2))
+        # displays the score of the game at the top left corner using self.score
         self.draw_text("Score: " + str(self.score), 24, BLACK, 0, 0)
-        # self.screen.blit(bg_image, (0,0))
+        
         self.all_sprites.draw(self.screen)
         # is a method because it is now inside the class and needs self 
         pg.display.flip()
