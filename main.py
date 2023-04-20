@@ -142,11 +142,14 @@ class Game:
                     self.player.pos.y = hits[0].rect.top
                     self.player.vel.y = 0
 
-        # infinite scroller that continues up 
+        # infinite scroller that continues upwards 
         '''
         if the player reaches a quarter of the height of the screen, 
-        the players y-position increases by its velocity, moving the player
-        up the screen. All platforms undergo the same movement. 
+        the players y-position increases by its vertical velocity, moving the player
+        up the screen. All platforms undergo the same movement in order to move the platforms 
+        upwards on the screen. If a platform reaches the bottom of the screen, it is removed
+        and the score is increased.
+        
         '''
         if self.player.rect.top <= HEIGHT / 4:
             self.player.pos.y += abs(self.player.vel.y)
