@@ -5,7 +5,7 @@
 # Create Libraries
 
 # Sources: http://kidscancode.org/blog/2016/08/pygame_1-1_getting-started/
-# Sources: https://github.com/PainBro/2021_sprint4_gameplatform/blob/main/platformer_game.py
+
 
 '''
 My Goal:
@@ -15,7 +15,9 @@ by jumping on platforms
 
 Figure out how to create a boundaries 
 
+Add score
 
+Change the background 
 '''
 # import libs
 import pygame as pg
@@ -152,6 +154,7 @@ class Game:
         
         '''
         if self.player.rect.top <= HEIGHT / 4:
+            # abs is absolute value of the variable
             self.player.pos.y += abs(self.player.vel.y)
             for plat in self.platforms:
                 plat.rect.y += abs(self.player.vel.y)
@@ -185,7 +188,7 @@ class Game:
         # blits the cloud image in the background 
         self.screen.blit(bg_image, (0,0))
         # displays the score of the game at the top left corner using self.score
-        self.draw_text("Score: " + str(self.score), 24, BLACK, 0, 0)
+        self.draw_text("Score: " + str(self.score), 30, BLACK, 0, 0)
         
         self.all_sprites.draw(self.screen)
         # is a method because it is now inside the class and needs self 
