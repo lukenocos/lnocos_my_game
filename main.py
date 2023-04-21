@@ -189,7 +189,6 @@ class Game:
         self.screen.blit(bg_image, (0,0))
         # displays the score of the game at the top left corner using self.score
         self.draw_text("Score: " + str(self.score), 30, BLACK, 0, 0)
-        
         self.all_sprites.draw(self.screen)
         # is a method because it is now inside the class and needs self 
         pg.display.flip()
