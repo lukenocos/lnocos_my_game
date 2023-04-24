@@ -23,6 +23,7 @@ Change the background
 import pygame as pg
 import random
 import os
+import sys
 # import settings 
 from settings import *
 from sprites import *
@@ -43,10 +44,10 @@ class Game:
         pg.mixer.init()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         # sets bg as the variable that loads the cloud background image
-        bg = pg.image.load('CLOUD.jpg')
-        global bg_image
+        background = pg.image.load('CLOUD.jpg')
+        global background_image
         # transforms the image into the same scale of the width and height of the screen
-        bg_image = pg.transform.scale(bg, (WIDTH, HEIGHT))
+        background_image = pg.transform.scale(background, (WIDTH, HEIGHT))
         pg.display.set_caption("my game")
         self.clock = pg.time.Clock()
         self.running = True
@@ -186,9 +187,11 @@ class Game:
         
     def draw(self):
         # blits the cloud image in the background 
-        self.screen.blit(bg_image, (0,0))
+        
+        self.screen.blit(background_image, (0,0))
+        
         # displays the score of the game at the top left corner using self.score
-        self.draw_text("Score: " + str(self.score), 30, BLACK, 0, 0)
+        self.draw_text("Score: " + str(self.score), 30, BLACK, 400, 300)
         self.all_sprites.draw(self.screen)
         # is a method because it is now inside the class and needs self 
         pg.display.flip()
@@ -198,9 +201,8 @@ class Game:
         font = pg.font.Font(font_name, size)
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
-        # text_rect.midstop = (x,y)
         self.screen.blit(text_surface, text_rect)
-    
+
     def get_mouse_now(self):
         x,y = pg.mouse.get_pos()
         return (x,y)
